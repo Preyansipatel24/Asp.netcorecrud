@@ -1,0 +1,109 @@
+﻿@model IEnumerable<ASPNETCOREDEMO.Models.Category>
+
+@{
+    Pager pager = new Pager();
+
+    int pageNo = 0;
+
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+    }
+}
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-primary">Category List</h2>
+        </div>
+        <div class ="col-6 text-right">
+            <a asp-controller="category" asp-action="create" class="btn btn-primary">
+           <i class="fa fa-plus"></i> &nbsp; Create New Category
+            </a>
+        </div>
+
+    </div>
+      <form method ="get" asp-action="Index1">
+        <p>
+        <input type="text" name="searching" style="width:500px;"/>
+            <input type="submit" value="Search" class="btn btn-primary"/>
+        </p>
+      </form>
+
+<br />
+    @if(Model.Count() > 0)
+    {
+        <table class="table table-bordered table-striped" style="width:100%">
+            <thead>
+                <tr>
+                    <th>
+                        Category Name
+                    </th>
+                    <th>
+                        Display Order
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var obj in Model)
+                {
+                    <tr>
+                        <td width:"50%">@obj.Name</td>
+                         <td width:"30%">@obj.DisplayOrder</td>
+                         <td class="text-center">
+                             <div class="w-75 btn-group" role="group">
+                                  <a asp-controller="category" asp-route-Id="@obj.Id" asp-action="Edit" class="btn btn-primary mx-2">
+                                   <i class="fa fa-pen-to-square"></i> &nbsp; 
+                                  </a>
+                                    <a asp-controller="category" asp-route-Id="@obj.Id" asp-action="Delete" class="btn btn-danger mx-2">
+                                 <i class="fa fa-trash-can"></i> &nbsp;   
+                                  </a>
+                             </div>
+                         </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class=""container>
+            @if (pager.TotalPages > 0)
+            {
+                <ul class="pagination justify-content-end">
+
+                     @if (pager.CurrentPage > 1)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-controller="Category" asp-action="Index1" asp-route-pg="1"> First </a>
+                           </li>
+
+                            <li>
+                             <a class="page-link" asp-controller="Category" asp-action="Index1" asp-route-pg="@(pager.CurrentPage - 1)"> Pervious </a>
+                        </li>
+                    }
+
+
+                    @for (var pge = pager.StartPage; pge <= pager.EndPage; pge++)
+                    {
+                        <li class="page-item @(pge == pager.CurrentPage ? "active" : "")">
+                            <a class = "page-link" asp-controller="Category" asp-action="Index1" asp-route-pg="@pge"> @pge </a>
+                        </li>
+                    }
+                    @if (pager.CurrentPage < pager.TotalPages)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-controller="Category" asp-action="Index1" asp-route-pg="@(pager.CurrentPage + 1)"> Next </a>
+                           </li>
+
+                            <li>
+                             <a class="page-link" asp-controller="Category" asp-action="Index1" asp-route-pg="@(pager.TotalPages)"> Last </a>
+                        </li>
+                    }
+                </ul>
+            }
+        </div>
+    }
+    else
+    {
+        <p>No Category data</p>
+    }
+</div>
